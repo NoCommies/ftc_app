@@ -29,12 +29,6 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CompassSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * This file illustrates the concept of calibrating a MR Compass
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -51,12 +45,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
+/*
 @Autonomous(name="Concept: Compass Calibration", group="Concept")
 @Disabled
 public class ConceptCompassCalibration extends LinearOpMode {
 
-    /* Declare OpMode members. */
+    /* Declare OpMode members. *//*
     HardwarePushbot     robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     CompassSensor       compass;
@@ -70,7 +64,7 @@ public class ConceptCompassCalibration extends LinearOpMode {
 
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
-         */
+         *//*
         robot.init(hardwareMap);
 
         // get a reference to our Compass Sensor object.
@@ -93,8 +87,9 @@ public class ConceptCompassCalibration extends LinearOpMode {
         // Start the robot rotating clockwise
         telemetry.addData("Compass", "Calibration mode. Turning the robot...");
         telemetry.update();
-        robot.leftDrive.setPower(MOTOR_POWER);
-        robot.rightDrive.setPower(-MOTOR_POWER);
+        robot.frontLeftMotor.setPower(MOTOR_POWER);
+        robot.frontRightMotor.setPower(-MOTOR_POWER);
+        robot.backLeftMotor.setPower();
 
         // run until time expires OR the driver presses STOP;
         runtime.reset();
@@ -119,3 +114,4 @@ public class ConceptCompassCalibration extends LinearOpMode {
         telemetry.update();
     }
 }
+*/

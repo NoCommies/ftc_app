@@ -29,14 +29,6 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -69,12 +61,12 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
+/*
 @Autonomous(name="Pushbot: Auto Drive By Gyro", group="Pushbot")
 @Disabled
 public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
 
-    /* Declare OpMode members. */
+    /* Declare OpMode members. *//*
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
@@ -100,13 +92,13 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
         /*
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
-         */
+         *//*
         robot.init(hardwareMap);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
@@ -123,8 +115,8 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
         telemetry.addData(">", "Robot Ready.");    //
         telemetry.update();
 
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
@@ -151,7 +143,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
         telemetry.update();
     }
 
-
+*/
    /**
     *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
     *  Move will stop if either of these conditions occur:
@@ -163,7 +155,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
     *                   If a relative angle is required, add/subtract from current heading.
-    */
+    *//*
     public void gyroDrive ( double speed,
                             double distance,
                             double angle) {
@@ -176,44 +168,44 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
         double  steer;
         double  leftSpeed;
         double  rightSpeed;
-
+*/
         // Ensure that the opmode is still active
-        if (opModeIsActive()) {
+//if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+// moveCounts = (int)(distance * COUNTS_PER_INCH);
+//newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
+// newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.leftDrive.setTargetPosition(newLeftTarget);
-            robot.rightDrive.setTargetPosition(newRightTarget);
+// robot.leftDrive.setTargetPosition(newLeftTarget);
+// robot.rightDrive.setTargetPosition(newRightTarget);
 
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
-            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.leftDrive.setPower(speed);
-            robot.rightDrive.setPower(speed);
+//speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+//robot.leftDrive.setPower(speed);
+//robot.rightDrive.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() &&
-                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+//while (opModeIsActive() &&
+//(robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // adjust relative speed based on heading error.
-                error = getError(angle);
-                steer = getSteer(error, P_DRIVE_COEFF);
+//error = getError(angle);
+//steer = getSteer(error, P_DRIVE_COEFF);
 
                 // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    steer *= -1.0;
+// if (distance < 0)
+//steer *= -1.0;
 
-                leftSpeed = speed - steer;
-                rightSpeed = speed + steer;
+//leftSpeed = speed - steer;
+//rightSpeed = speed + steer;
 
                 // Normalize speeds if either one exceeds +/- 1.0;
-                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+               /* max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
                 if (max > 1.0)
                 {
                     leftSpeed /= max;
@@ -252,7 +244,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
      * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
-     */
+     *//*
     public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
@@ -272,6 +264,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
      *                   If a relative angle is required, add/subtract from current heading.
      * @param holdTime   Length of time (in seconds) to hold the specified heading.
      */
+                /*
     public void gyroHold( double speed, double angle, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
@@ -298,7 +291,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
      *                  If a relative angle is required, add/subtract from current heading.
      * @param PCoeff    Proportional Gain coefficient
      * @return
-     */
+     *//*
     boolean onHeading(double speed, double angle, double PCoeff) {
         double   error ;
         double   steer ;
@@ -320,7 +313,8 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
             rightSpeed  = speed * steer;
             leftSpeed   = -rightSpeed;
         }
-
+*/
+                        /*
         // Send desired speeds to motors.
         robot.leftDrive.setPower(leftSpeed);
         robot.rightDrive.setPower(rightSpeed);
@@ -338,7 +332,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
      * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
      * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
-     */
+     *//*
     public double getError(double targetAngle) {
 
         double robotError;
@@ -355,9 +349,10 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
      * @param error   Error angle in robot relative degrees
      * @param PCoeff  Proportional Gain Coefficient
      * @return
-     */
+     *//*
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
 }
+*/

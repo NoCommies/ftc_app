@@ -29,11 +29,6 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * This file illustrates the concept of driving a path based on time.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -54,12 +49,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
+/*
 @Autonomous(name="Pushbot: Auto Drive By Time", group="Pushbot")
 @Disabled
 public class PushbotAutoDriveByTime_Linear extends LinearOpMode {
 
-    /* Declare OpMode members. */
+    /* Declare OpMode members. *//*
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -73,7 +68,7 @@ public class PushbotAutoDriveByTime_Linear extends LinearOpMode {
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
-         */
+         *//*
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
@@ -123,3 +118,4 @@ public class PushbotAutoDriveByTime_Linear extends LinearOpMode {
         sleep(1000);
     }
 }
+*/
