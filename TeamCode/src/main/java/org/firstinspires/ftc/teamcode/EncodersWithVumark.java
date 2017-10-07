@@ -21,7 +21,7 @@ public class EncodersWithVumark extends OpMode {
     final double GEAR_RATIO = 32 / 48D; //48 teeth on motor gear, 32 teeth on wheel gear
     final double WHEEL_CIRCUMFERENCE = 4 * Math.PI; //wheel diameter * pi
     final double COUNTS_PER_INCH = (ENCODER_TICKS_PER_ROTATION * GEAR_RATIO) / WHEEL_CIRCUMFERENCE; //number of encoder ticks per inch moved
-    final double CRYPTOBOX_CENTER_DISTANCE = 35.5; //distance from center of relic-side blue balance board to center of associated cryptobox center
+    final double CRYPTOBOX_CENTER_DISTANCE = 35.5; //distance from center of relic-side blue balance board to center of associated cryptobox center this will have to change as we work on the other starting positions
     final double CRYPTOBOX_OFFSET = 15; //offset of left/right areas of cryptobox from cryptobox center in inches
     //actual value should be 6.5, offset is exaggerated for testing purposes
     final double CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET; //moves robot less to reach left (close) side of cryptobox
@@ -33,20 +33,13 @@ public class EncodersWithVumark extends OpMode {
     DcMotor backLeftMotor;
     DcMotor backRightMotor;
     VuforiaLocalizer vuforia; //later initialized with (sic) parameters
-    VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-    VuforiaTrackable relicTemplate = relicTrackables.get(0);
-
-    DcMotor[] motors = { //array of all motors
-
-            frontLeftMotor,
-            frontRightMotor,
-            backLeftMotor,
-            backRightMotor,
-    };
+    VuforiaTrackables relicTrackables;
+    VuforiaTrackable relicTemplate;
 
     @Override
     public void init() {
-
+        telemetry.addData("Init has started", "init()"); //LEFT, CENTER, or RIGHT, useful for debugging
+        telemetry.update();
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor"); //initialization based on phone configuration
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
@@ -55,11 +48,12 @@ public class EncodersWithVumark extends OpMode {
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE); //must be reversed because motor is facing a different direction
-
-        for (DcMotor motor : motors) { //allows us to set properties for EVERY motor at once
-
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
+        telemetry.addData("Motors have been initialized", "motors"); //LEFT, CENTER, or RIGHT, useful for debugging
+        telemetry.update();
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);*/
@@ -72,6 +66,8 @@ public class EncodersWithVumark extends OpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT; //uses front camera of Robot Controller for detection
         //if above code is changed to ...CameraDirection.BACK;, the back-facing camera will be used instead
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters); //vuforia object initialized based on set parameters
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
         relicTrackables.activate(); //start listening for camera's data
     }
 
@@ -79,22 +75,25 @@ public class EncodersWithVumark extends OpMode {
     public void init_loop() {
 
         vuMark = RelicRecoveryVuMark.from(relicTemplate); //LEFT, CENTER, or RIGHT if read, UNKNOWN if undetermined reading
+        telemetry.addData("vuMark", vuMark.toString()); //LEFT, CENTER, or RIGHT, useful for debugging
+        telemetry.update();
     }
 
     @Override
     public void start() {
 
         ENCODER_TARGET_POSITION = (int) (COUNTS_PER_INCH * calculateInches(vuMark));
+        //ENCODER_TARGET_POSITION = (int) (COUNTS_PER_INCH * 30);
         //desired encoder targets
+        frontLeftMotor.setTargetPosition(ENCODER_TARGET_POSITION + frontLeftMotor.getCurrentPosition());
+        frontRightMotor.setTargetPosition(ENCODER_TARGET_POSITION + frontRightMotor.getCurrentPosition());
+        backLeftMotor.setTargetPosition(ENCODER_TARGET_POSITION + backLeftMotor.getCurrentPosition());
+        backRightMotor.setTargetPosition(ENCODER_TARGET_POSITION + backRightMotor.getCurrentPosition());
 
-        for (DcMotor motor : motors) { //again, sets properties for every motor
-
-            motor.setTargetPosition(ENCODER_TARGET_POSITION + motor.getCurrentPosition()); //corrects for motor offset
-            //motor offset is unlikely to occur in practice,
-            //because encoders are reset before this state,
-            //but the correction is included nonetheless
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         frontLeftMotor.setPower(0.5);
         frontRightMotor.setPower(0.5);
@@ -105,8 +104,6 @@ public class EncodersWithVumark extends OpMode {
 
     public void loop() {
 
-        telemetry.addData("vuMark", vuMark.toString()); //LEFT, CENTER, or RIGHT, useful for debugging
-        telemetry.update();
     }
 
     public double calculateInches(RelicRecoveryVuMark vuMark) {
@@ -115,7 +112,7 @@ public class EncodersWithVumark extends OpMode {
         else if (vuMark == RelicRecoveryVuMark.RIGHT) return CRYPTOBOX_RIGHT_DISTANCE;
         else if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN)
             return CRYPTOBOX_CENTER_DISTANCE;
-        //UNKNOWN is grouped with CENTER because CENTER is easiest to place\
+        //UNKNOWN is grouped with CENTER because CENTER is easiest to place
 
         throw new IllegalArgumentException(); //never reached because all enum values are covered, but necessary for method to compile
     }

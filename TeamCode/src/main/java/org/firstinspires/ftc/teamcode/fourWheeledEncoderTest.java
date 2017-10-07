@@ -14,40 +14,57 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 public class fourWheeledEncoderTest extends OpMode {
 
     final double COUNTS_PER_INCH = 1120 * (32 / 48D) * 1 / 4D * 1 / Math.PI;
-    int FINAL_POSITION;
+    int FINAL_POSITION = 1120;
     DcMotor frontLeftMotor;
+
     DcMotor frontRightMotor;
     DcMotor backLeftMotor;
     DcMotor backRightMotor;
 
-    DcMotor[] motors = {
 
-            frontLeftMotor,
+    /*DcMotor[] motors = {
+
+            frontLeftMotor
+
             frontRightMotor,
             backLeftMotor,
             backRightMotor,
-    };
 
-    Vumark vumark = new Vumark();
+    };*/
 
     @Override
     public void init() {
 
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setTargetPosition(FINAL_POSITION + frontLeftMotor.getCurrentPosition());
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setTargetPosition(FINAL_POSITION + frontLeftMotor.getCurrentPosition());
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setTargetPosition(FINAL_POSITION + frontLeftMotor.getCurrentPosition());
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setTargetPosition(FINAL_POSITION + frontLeftMotor.getCurrentPosition());
+        backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        for (DcMotor motor : motors) {
+
+
+        /*for (DcMotor motor : motors) {
 
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setTargetPosition(FINAL_POSITION + motor.getCurrentPosition());
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        }*/
     }
 
     @Override
@@ -58,12 +75,12 @@ public class fourWheeledEncoderTest extends OpMode {
 
     @Override
     public void start() {
-
-        FINAL_POSITION = (int) (COUNTS_PER_INCH * calculateInches(vumark.vuMark));
         frontLeftMotor.setPower(0.5);
+
         frontRightMotor.setPower(0.5);
         backLeftMotor.setPower(0.5);
         backRightMotor.setPower(0.5);
+
     }
 
     public void loop() {
