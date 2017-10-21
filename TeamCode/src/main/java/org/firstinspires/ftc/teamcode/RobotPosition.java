@@ -5,15 +5,16 @@ package org.firstinspires.ftc.teamcode;
  */
 
 public enum RobotPosition {
-    RED_CLOSE(Color.RED, Position.CLOSE),
-    RED_FAR(Color.RED, Position.FAR),
-    BLUE_CLOSE(Color.BLUE, Position.CLOSE),
-    BLUE_FAR(Color.BLUE, Position.FAR);
+
+    RED_CLOSE(Color.RED, RelativePosition.CLOSE),
+    RED_FAR(Color.RED, RelativePosition.FAR),
+    BLUE_CLOSE(Color.BLUE, RelativePosition.CLOSE),
+    BLUE_FAR(Color.BLUE, RelativePosition.FAR);
 
     private final Color color;
-    private final Position position;
+    private final RelativePosition position;
 
-    RobotPosition(Color color, Position position) {
+    RobotPosition(Color color, RelativePosition position) {
 
         this.color = color;
         this.position = position;
@@ -21,21 +22,21 @@ public enum RobotPosition {
 
     public boolean isRed() {
 
-        return color == Color.RED;
+        return this.color == Color.RED;
     }
 
     public boolean isBlue() {
 
-        return color == Color.BLUE;
+        return this.color == Color.BLUE;
     }
 
     public boolean isClose() {
 
-        return position == Position.CLOSE;
+        return this.position == RelativePosition.CLOSE;
     }
 
     public boolean isFar() {
 
-        return position == Position.FAR;
+        return this.position == RelativePosition.FAR;
     }
 }

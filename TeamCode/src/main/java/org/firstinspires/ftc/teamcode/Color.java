@@ -6,5 +6,10 @@ package org.firstinspires.ftc.teamcode;
 
 public enum Color { //starting position of the robot -- its alliance color
     RED,
-    BLUE,
+    BLUE;
+
+    Color invert() {
+
+        return this == RED ? BLUE : RED;
+    }
 }

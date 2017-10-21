@@ -1,3 +1,4 @@
+/*
 package ExperimentalClasses;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -9,9 +10,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
+*/
 /**
  * Created by 4924_Users on 9/29/2017.
- */
+ *//*
+
 @Autonomous(name = "EncoderAuto")
 public class encoderAutonomous extends LinearOpMode {
 
@@ -22,12 +25,15 @@ public class encoderAutonomous extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double DRIVE_SPEED = 0.075;
     static final double TURN_SPEED = 0.075;
-    /* Declare OpMode members. */
+    */
+/* Declare OpMode members. *//*
+
     HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
     BNO055IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
 
-    /*@Override
+    */
+/*@Override
     public void init() {
 
         super.init();
@@ -36,15 +42,18 @@ public class encoderAutonomous extends LinearOpMode {
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-    }*/
+    }*//*
+
 
     @Override
     public void runOpMode() {
 
-        /*
+        */
+/*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
-         */
+         *//*
+
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
@@ -52,6 +61,7 @@ public class encoderAutonomous extends LinearOpMode {
         telemetry.update();
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,14 +89,16 @@ public class encoderAutonomous extends LinearOpMode {
         telemetry.update();
     }
 
-    /*
+    */
+/*
      *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
-     */
+     *//*
+
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -153,3 +165,4 @@ public class encoderAutonomous extends LinearOpMode {
         }
     }
 }
+*/
