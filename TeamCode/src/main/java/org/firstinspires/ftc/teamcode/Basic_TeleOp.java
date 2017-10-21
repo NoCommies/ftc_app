@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Basic: Iterative OpMode", group = "Iterative Opmode")
 
-public class Basic_TeleOp extends OpMode {
+public class  Basic_TeleOp extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftMotor = null;
@@ -110,30 +110,23 @@ public class Basic_TeleOp extends OpMode {
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
-
-
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        double collectionPower = 0.0;
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.left_trigger - gamepad1.right_trigger;
-        double collectionPower = -gamepad2.left_stick_y;
+        double turn = gamepad1.right_trigger - gamepad1.left_trigger;
+        boolean collectionPowerUp = gamepad2.b;
+        boolean collectionPowerDown = gamepad2.a;
 
-        if (drive <= 0) {
-            leftPower = Range.clip(drive + turn, -1.0, 0.0);
-            rightPower = Range.clip(drive - turn, -1.0, 0.0);
-        } else {
-            leftPower = Range.clip(drive + turn, 0.0, 1.0);
-            rightPower = Range.clip(drive - turn, 0.0, 1.0);
+        if (collectionPowerUp) {
+             collectionPower = 1;
+        } else if (collectionPowerDown) {
+             collectionPower = -1;
         }
 
-
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
+        leftPower =drive + turn;
+        rightPower =drive - turn;
 
         // Send calculated power to wheels
         frontLeftMotor.setPower(leftPower);
@@ -144,6 +137,13 @@ public class Basic_TeleOp extends OpMode {
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+
+        if (drive == 0.0 && turn == 0.0) {
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+        }
     }
 
     /*
