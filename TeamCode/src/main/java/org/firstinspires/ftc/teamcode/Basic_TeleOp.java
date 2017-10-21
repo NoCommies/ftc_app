@@ -58,7 +58,7 @@ public class Basic_TeleOp extends OpMode {
     private DcMotor frontRightMotor = null;
     private DcMotor backLeftMotor = null;
     private DcMotor backRightMotor = null;
-    private DcMotor attachmentMotor = null;
+    private DcMotor collectionMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -71,18 +71,18 @@ public class Basic_TeleOp extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        // frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        attachmentMotor = hardwareMap.get(DcMotor.class, "attachmentMotor");
+        collectionMotor = hardwareMap.get(DcMotor.class, "collectionMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        //  frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        attachmentMotor.setDirection(DcMotor.Direction.FORWARD);
+        collectionMotor.setDirection(DcMotor.Direction.FORWARD);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -119,7 +119,7 @@ public class Basic_TeleOp extends OpMode {
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.left_trigger - gamepad1.right_trigger;
-        double attachmentPower = -gamepad2.left_stick_y;
+        double collectionPower = -gamepad2.left_stick_y;
 
         if (drive <= 0) {
             leftPower = Range.clip(drive + turn, -1.0, 0.0);
@@ -137,10 +137,10 @@ public class Basic_TeleOp extends OpMode {
 
         // Send calculated power to wheels
         frontLeftMotor.setPower(leftPower);
-        //frontRightMotor.setPower(rightPower);
+        frontRightMotor.setPower(rightPower);
         backLeftMotor.setPower(leftPower);
         backRightMotor.setPower(rightPower);
-        attachmentMotor.setPower(attachmentPower);
+        collectionMotor.setPower(collectionPower);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
