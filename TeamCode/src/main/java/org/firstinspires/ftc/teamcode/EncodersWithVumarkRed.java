@@ -12,7 +12,6 @@ public class EncodersWithVumarkRed extends EncodersWithVumarkBlue {
     @Override
     public void start() {
 
-
     }
 
     @Override
@@ -23,6 +22,6 @@ public class EncodersWithVumarkRed extends EncodersWithVumarkBlue {
     @Override
     public RobotPosition startingPosition() {
 
-        return RobotPosition.RED_CLOSE;
+        return RobotPosition.RED_NEAR;
     }
 }

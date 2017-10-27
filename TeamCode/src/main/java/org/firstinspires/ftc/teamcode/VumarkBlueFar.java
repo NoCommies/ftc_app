@@ -3,18 +3,20 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * Created by 4924_Users on 9/30/2017.
+ * Created by 4924_Users on 10/26/2017.
  */
-@Autonomous(name = "EncodersWithVumarkBlue")
-public class EncodersWithVumarkBlue extends Robot {
 
-    boolean notFinished = true;
+@Autonomous(name = "VumarkBlueFar")
+public class VumarkBlueFar extends Robot {
+
+    boolean isFinished = false;
 
     {
 
-        CRYPTOBOX_CENTER_DISTANCE = 35.5;
+        CRYPTOBOX_CENTER_DISTANCE = 16;
     }
 
+    //initializing CRYPTOBOX_LEFT and RIGHT DISTANCE
     {
         if (STARTING_POSITION.isNear()) {
 
@@ -43,27 +45,22 @@ public class EncodersWithVumarkBlue extends Robot {
     }
 
     @Override
-    public void start() {
-
-        super.start();
-    }
-
-    @Override
     public void loop() {
 
         super.loop();
-        if (notFinished) {
+        if (!isFinished) {
+
+            driveWithEncoders(DRIVE_POWER, 29);
+            turnToPosition(TURN_POWER, 90);
             driveWithEncoders(DRIVE_POWER, calculateInches());
-            turnToPosition(TURN_POWER, 270);
-            driveWithEncoders(DRIVE_POWER, 5);
+            turnToPosition(TURN_POWER, 0);
+            isFinished = true;
         }
-        notFinished = false;
     }
 
-    @Override
-    public RobotPosition startingPosition() {
+    RobotPosition startingPosition() {
 
-        return RobotPosition.BLUE_NEAR;
+        return RobotPosition.BLUE_FAR;
     }
 
     public boolean isAutonomous() {

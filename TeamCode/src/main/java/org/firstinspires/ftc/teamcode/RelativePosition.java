@@ -6,6 +6,6 @@ package org.firstinspires.ftc.teamcode;
 
 public enum RelativePosition {//starting position of the robot -- whether it is close or far from
     // relic scoring zone
-    CLOSE,
+    NEAR,
     FAR,
 }
