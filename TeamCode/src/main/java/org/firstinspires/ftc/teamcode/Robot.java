@@ -24,16 +24,14 @@ public abstract class Robot extends OpMode {
 
     /* FIELD PARAMETERS */
 
-    static final double CRYPTOBOX_CENTER_DISTANCE = 35.5; //distance from center of relic-side
     static final double DRIVE_POWER = 0.4;
     static final double TURN_POWER = 0.4;
     //to center of cryptobox
-    private static final double CRYPTOBOX_OFFSET = 6.5; //offset of left/right areas of cryptobox
+    static final double CRYPTOBOX_OFFSET = 6.5; //offset of left/right areas of cryptobox
     /* ROBOT CONSTANTS*/
     private static final int ENCODER_TICKS_PER_ROTATION = 1120; //encoder counts per shaft turn
     private static final double GEAR_RATIO = 32 / 48D; //48 teeth on motor gear, 32 teeth on wheel gear
     private static final double WHEEL_DIAMETER = 4;
-
     /* HARDWARE */
     //declares our hardware, initialized later in init()
     private static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; //wheel diameter * pi
@@ -41,6 +39,7 @@ public abstract class Robot extends OpMode {
             (ENCODER_TICKS_PER_ROTATION * GEAR_RATIO) / WHEEL_CIRCUMFERENCE;
     private static final double GYRO_TURN_TOLERANCE_DEGREES = 5;
     private static final int ENCODER_TOLERANCE = 10;
+    static double CRYPTOBOX_CENTER_DISTANCE = Double.MIN_VALUE; //distance from center of relic-side
     static
     RobotPosition STARTING_POSITION;
     static DcMotor[] DRIVE_BASE_MOTORS = new DcMotor[4];
@@ -55,17 +54,6 @@ public abstract class Robot extends OpMode {
     /* VUFORIA */
     //fields for camera recognition
     static RelicRecoveryVuMark vuMark; //enum set based on pictogram reading
-    /* MOTORS */
-    private static DcMotor frontLeftMotor;
-    private static DcMotor frontRightMotor;
-    private static DcMotor backLeftMotor;
-    //encoder ticks per inch moved
-    private static DcMotor backRightMotor;
-    private static Acceleration acceleration;
-    private static VuforiaLocalizer vuforia; //later initialized with (sic) vuforiaParameters
-    private static VuforiaTrackables relicTrackables;
-    private static VuforiaTrackable relicTemplate;
-
     /* STATES *//*
 
     enum STATE {
@@ -80,8 +68,18 @@ public abstract class Robot extends OpMode {
         }
     }*/
     // from cryptobox center in inches, should be 6.5, but exaggerated for testing
-    final double CRYPTOBOX_LEFT_DISTANCE;
-    final double CRYPTOBOX_RIGHT_DISTANCE;
+    static double CRYPTOBOX_LEFT_DISTANCE;
+    static double CRYPTOBOX_RIGHT_DISTANCE;
+    /* MOTORS */
+    private static DcMotor frontLeftMotor;
+    private static DcMotor frontRightMotor;
+    private static DcMotor backLeftMotor;
+    //encoder ticks per inch moved
+    private static DcMotor backRightMotor;
+    private static Acceleration acceleration;
+    private static VuforiaLocalizer vuforia; //later initialized with (sic) vuforiaParameters
+    private static VuforiaTrackables relicTrackables;
+    private static VuforiaTrackable relicTemplate;
     private VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters();
 
     {
@@ -94,26 +92,6 @@ public abstract class Robot extends OpMode {
         msStuckDetectInitLoop = 10000;
         msStuckDetectStart = 10000;
         msStuckDetectLoop = 10000;
-    }
-
-    //initializing CRYPTOBOX_LEFT and RIGHT DISTANCE
-    {
-        if (startingPosition().isClose()) {
-
-            if (startingPosition().isBlue()) { //cryptobox is reversed when colors change
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-            } else {
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-            }
-        } else { //STARTING_POSITION.isFar()
-
-            CRYPTOBOX_LEFT_DISTANCE = -1;
-            CRYPTOBOX_RIGHT_DISTANCE = -1;
-        }
     }
 
     static void reverse(DcMotor d) {
@@ -227,26 +205,6 @@ public abstract class Robot extends OpMode {
 
     //true for Autonomous, false for TeleOp
     abstract boolean isAutonomous();
-
-    double calculateInches(RelicRecoveryVuMark vuMark) {
-
-        telemetry.addData("Starting calculateInches...", "");
-        try {
-
-            if (vuMark == RelicRecoveryVuMark.LEFT) return CRYPTOBOX_LEFT_DISTANCE;
-            else if (vuMark == RelicRecoveryVuMark.RIGHT) return CRYPTOBOX_RIGHT_DISTANCE;
-            else if (vuMark == RelicRecoveryVuMark.CENTER || vuMark == RelicRecoveryVuMark.UNKNOWN) //UNKNOWN is grouped with CENTER because CENTER is easiest to place
-                return CRYPTOBOX_CENTER_DISTANCE;
-
-            else throw new IllegalArgumentException
-                        ("vuMark is not set to LEFT, CENTER, RIGHT, or UNKNOWN");
-
-        } catch (RuntimeException e) { //we catch RuntimeException because the method may also
-            // throw a NullPointerException if vuMark is null
-
-            return CRYPTOBOX_CENTER_DISTANCE;
-        }
-    }
 
     void writeTelemetry(Object status) {
 

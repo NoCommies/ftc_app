@@ -94,7 +94,7 @@ public class AutonomousTest extends Robot {
 
     public RobotPosition startingPosition() {
 
-        return RobotPosition.BLUE_CLOSE;
+        return RobotPosition.BLUE_NEAR;
     }
 }
 */
