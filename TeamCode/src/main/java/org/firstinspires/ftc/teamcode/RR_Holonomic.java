@@ -35,23 +35,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- * <p>
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- * <p>
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
 
-@TeleOp(name = "Basic: Iterative OpMode", group = "Iterative Opmode")
 
-public class  Basic_TeleOp extends OpMode {
+@TeleOp(name = "RR_Holonomic", group = "Iterative Opmode")
+
+public class RR_Holonomic extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftMotor = null;
@@ -59,6 +47,8 @@ public class  Basic_TeleOp extends OpMode {
     private DcMotor backLeftMotor = null;
     private DcMotor backRightMotor = null;
     private DcMotor collectionMotor = null;
+    private DcMotor relicExtension = null;
+    private DcMotor deliveryMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -75,6 +65,8 @@ public class  Basic_TeleOp extends OpMode {
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         collectionMotor = hardwareMap.get(DcMotor.class, "collectionMotor");
+        relicExtension = hardwareMap.get(DcMotor.class, "relicExtension");
+        deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -83,6 +75,8 @@ public class  Basic_TeleOp extends OpMode {
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
         collectionMotor.setDirection(DcMotor.Direction.FORWARD);
+        relicExtension.setDirection(DcMotor.Direction.FORWARD);
+        deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -111,39 +105,85 @@ public class  Basic_TeleOp extends OpMode {
         double leftPower;
         double rightPower;
         double collectionPower = 0.0;
+        double deliveryPower = 0.0;
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
+        //we set what to do when the motor is not given power, which is to brake completely, instead of coasting
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.right_trigger - gamepad1.left_trigger;
+        //drive is what direction we want to move, either forwards, backwards, or neither
+
+        double holonomic = -gamepad1.left_stick_x;
+        //holonomic is what direction we want to move sideways
+
+        double turnRight = gamepad1.right_trigger;
+        //turnRight is how much we want to turn right
+
+        double turnLeft = gamepad1.left_trigger;
+        //turnLeft is how much we want to turn left
+
         boolean collectionPowerUp = gamepad2.b;
+        //collectionPowerUp is dependent on whether or not we want the collection to collect
+
         boolean collectionPowerDown = gamepad2.a;
+        //collectionPowerDown is dependent on whether or not we want the collection deliver (Push downwards)
+
+        boolean deliveryUp = gamepad1.b;
+        //deliveryUp is dependent on whether or not we want the delivery to deliver
+
+        boolean deliveryDown = gamepad1.a;
+        //deliveryDown is dependent on whether or not we want the delivery to go downwards
+
+        double linearSlide =  (gamepad2.left_stick_y);
+         //this extends the linearSlide using the measuring tape to extend it
 
         if (collectionPowerUp) {
-             collectionPower = 1;
+
+            //if we want it to collect, we set collectionPower to 1
+            collectionPower = 1;
         } else if (collectionPowerDown) {
-             collectionPower = -1;
+
+            //if we want the collection to deliver/spin backswards, we set collectionPower to -1
+            collectionPower = -1;
         }
 
-        leftPower =drive + turn;
-        rightPower =drive - turn;
+        if (deliveryUp) {
 
-        // Send calculated power to wheels
-        frontLeftMotor.setPower(leftPower);
-        frontRightMotor.setPower(rightPower);
-        backLeftMotor.setPower(leftPower);
-        backRightMotor.setPower(rightPower);
+            //if we want it to collect, we set collectionPower to 1
+            deliveryPower = -1;
+        } else if (deliveryDown) {
+
+            //if we want the collection to deliver/spin backswards, we set collectionPower to -1
+            deliveryPower = 1;
+        }
+
+        //we are calculating the power to send to each different wheel, which each need their own power since it is calculated in different ways
+        double frontLeftPower =drive - holonomic + turnRight - turnLeft;
+        double frontRightPower =drive + holonomic - turnRight + turnLeft;
+        double backRightPower =drive - holonomic - turnRight + turnLeft;
+        double backLeftPower =drive + holonomic + turnRight - turnLeft;
+
+        // Send calculated power to wheels and motors
+        frontLeftMotor.setPower(frontLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backLeftMotor.setPower(backLeftPower);
+        backRightMotor.setPower(backRightPower);
         collectionMotor.setPower(collectionPower);
-        // Show the elapsed game time and wheel power.
+        relicExtension.setPower(linearSlide);
+        deliveryMotor.setPower(deliveryPower);
+        // Show the elapsed game time
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Linear Slide", "Power" + linearSlide);
 
-        if (drive == 0.0 && turn == 0.0) {
-            frontLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            backRightMotor.setPower(0);
-        }
+        turnLeft = 0;
+        turnRight = 0;
+
+
+
     }
 
     /*
