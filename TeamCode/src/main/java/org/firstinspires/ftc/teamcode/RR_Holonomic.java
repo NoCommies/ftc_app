@@ -31,7 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -49,12 +51,17 @@ public class RR_Holonomic extends OpMode {
     private DcMotor collectionMotor = null;
     private DcMotor relicExtension = null;
     private DcMotor deliveryMotor = null;
-
+    private Servo barServo = null;
+    private CRServo elbowServo = null;
+    double clawClosePosition = 0.5;
     /*
+
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+        final double MIDDLEPOSITION180 = 0.0;
+        //final double MIDDLE_POSITION_CONTINOUS = 0.0;
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -67,6 +74,8 @@ public class RR_Holonomic extends OpMode {
         collectionMotor = hardwareMap.get(DcMotor.class, "collectionMotor");
         relicExtension = hardwareMap.get(DcMotor.class, "relicExtension");
         deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
+        barServo = hardwareMap.get(Servo.class, "barServo");
+        elbowServo = hardwareMap.get(CRServo.class, "elbowServo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -77,6 +86,7 @@ public class RR_Holonomic extends OpMode {
         collectionMotor.setDirection(DcMotor.Direction.FORWARD);
         relicExtension.setDirection(DcMotor.Direction.FORWARD);
         deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
+        barServo.setPosition(MIDDLEPOSITION180);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -101,11 +111,16 @@ public class RR_Holonomic extends OpMode {
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
         double collectionPower = 0.0;
         double deliveryPower = 0.0;
+        boolean barDownPosition;
+        final double BARMOVE = 1.0;
+        final double BARCLOSE = 0.0;
+        boolean elbowBent;
+        //final double ELBOWMOVE = 0.5;
+        //final double ELBOWSTRAIGHTVALUE = 0.0;
+        double position = 0.0;
+        double clawPosition = 0.0;
 
         //we set what to do when the motor is not given power, which is to brake completely, instead of coasting
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -116,56 +131,67 @@ public class RR_Holonomic extends OpMode {
 
         double drive = -gamepad1.left_stick_y;
         //drive is what direction we want to move, either forwards, backwards, or neither
-
         double holonomic = -gamepad1.left_stick_x;
         //holonomic is what direction we want to move sideways
-
         double turnRight = gamepad1.right_trigger;
         //turnRight is how much we want to turn right
-
         double turnLeft = gamepad1.left_trigger;
         //turnLeft is how much we want to turn left
-
         boolean collectionPowerUp = gamepad2.b;
         //collectionPowerUp is dependent on whether or not we want the collection to collect
-
         boolean collectionPowerDown = gamepad2.a;
         //collectionPowerDown is dependent on whether or not we want the collection deliver (Push downwards)
-
         boolean deliveryUp = gamepad1.b;
         //deliveryUp is dependent on whether or not we want the delivery to deliver
-
         boolean deliveryDown = gamepad1.a;
         //deliveryDown is dependent on whether or not we want the delivery to go downwards
-
         double linearSlide =  (gamepad2.left_stick_y);
          //this extends the linearSlide using the measuring tape to extend it
+        boolean halfSpeed = gamepad1.left_bumper;
 
         if (collectionPowerUp) {
-
             //if we want it to collect, we set collectionPower to 1
             collectionPower = 1;
         } else if (collectionPowerDown) {
-
             //if we want the collection to deliver/spin backswards, we set collectionPower to -1
             collectionPower = -1;
         }
 
-        if (deliveryUp) {
+        if (gamepad2.left_bumper) {
+            barServo.setPosition(BARCLOSE + BARMOVE);
+            clawPosition = BARCLOSE + BARMOVE;
+        } else  {
+            barServo.setPosition(BARCLOSE);
+            clawPosition = BARCLOSE;
+        }
 
-            //if we want it to collect, we set collectionPower to 1
+        if (gamepad2.right_bumper) {
+            elbowServo.setPower(gamepad2.right_trigger);
+        } else {
+            elbowServo.setPower(-gamepad2.left_trigger);
+        }
+
+        if (deliveryUp) {
             deliveryPower = -1;
         } else if (deliveryDown) {
-
             //if we want the collection to deliver/spin backswards, we set collectionPower to -1
             deliveryPower = 1;
         }
 
         //we are calculating the power to send to each different wheel, which each need their own power since it is calculated in different ways
-        double frontLeftPower =drive - holonomic + turnRight - turnLeft;
-        double frontRightPower =drive + holonomic - turnRight + turnLeft;
-        double backRightPower =drive - holonomic - turnRight + turnLeft;
-        double backLeftPower =drive + holonomic + turnRight - turnLeft;
+
+        double frontLeftPower =  Range.clip(drive - holonomic + turnRight - turnLeft, -1.0, 1.0);
+        double frontRightPower =  Range.clip(drive + holonomic - turnRight + turnLeft, -1.0, 1.0);
+        double backRightPower =  Range.clip(drive - holonomic - turnRight + turnLeft, -1.0, 1.0);
+        double backLeftPower =  Range.clip(drive + holonomic + turnRight - turnLeft, -1.0, 1.0);
+
+        if (halfSpeed) {
+            frontLeftPower = 0.5 * (frontLeftPower);
+            frontRightPower = 0.5 * (frontRightPower);
+            backRightPower = 0.5 * (backRightPower);
+            backLeftPower = 0.5 * (backLeftPower);
+
+        }
 
         // Send calculated power to wheels and motors
         frontLeftMotor.setPower(frontLeftPower);
@@ -175,14 +201,15 @@ public class RR_Holonomic extends OpMode {
         collectionMotor.setPower(collectionPower);
         relicExtension.setPower(linearSlide);
         deliveryMotor.setPower(deliveryPower);
+
         // Show the elapsed game time
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Linear Slide", "Power" + linearSlide);
+       // telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Slow Mode", halfSpeed);
+        telemetry.addData("Elbow Servo", "Continous Position" + position);
+        telemetry.addData("Claw Servo", "Continous Position" + clawPosition);
 
         turnLeft = 0;
         turnRight = 0;
-
-
 
     }
 
