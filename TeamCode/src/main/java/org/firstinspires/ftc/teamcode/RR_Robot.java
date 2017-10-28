@@ -17,11 +17,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
- * Created by 4924_Users on 10/7/2017.
+ * Created by 4924_Users on 10/27/2017.
  */
 
-public abstract class Robot extends OpMode {
-
+public abstract class RR_Robot extends OpMode {
     /* FIELD PARAMETERS */
 
     static final double DRIVE_POWER = 0.4;
@@ -30,9 +29,7 @@ public abstract class Robot extends OpMode {
     static final double CRYPTOBOX_OFFSET = 6.5; //offset of left/right areas of cryptobox
     /* ROBOT CONSTANTS*/
     private static final int ENCODER_TICKS_PER_ROTATION = 1120; //encoder counts per shaft turn
-    private static final int MOTOR_TEETH = 32;
-    private static final int WHEEL_TEETH = 16;
-    private static final double GEAR_RATIO = WHEEL_TEETH / (double) MOTOR_TEETH; //48 teeth on motor gear, 32 teeth on wheel gear
+    private static final double GEAR_RATIO = 32 / 48D; //48 teeth on motor gear, 32 teeth on wheel gear
     private static final double WHEEL_DIAMETER = 4;
     /* HARDWARE */
     //declares our hardware, initialized later in init()
@@ -73,11 +70,14 @@ public abstract class Robot extends OpMode {
     static double CRYPTOBOX_LEFT_DISTANCE;
     static double CRYPTOBOX_RIGHT_DISTANCE;
     /* MOTORS */
-    static DcMotor frontLeftMotor;
-    static DcMotor frontRightMotor;
-    static DcMotor backLeftMotor;
+    private static DcMotor frontLeftMotor;
+    private static DcMotor frontRightMotor;
+    private static DcMotor backLeftMotor;
+    private static DcMotor collectionMotor;
+    private static DcMotor relicExtension;
+    private static DcMotor deliveryMotor;
     //encoder ticks per inch moved
-    static DcMotor backRightMotor;
+    private static DcMotor backRightMotor;
     private static Acceleration acceleration;
     private static VuforiaLocalizer vuforia; //later initialized with (sic) vuforiaParameters
     private static VuforiaTrackables relicTrackables;
@@ -107,6 +107,7 @@ public abstract class Robot extends OpMode {
         reverse(frontRightMotor);
         reverse(backLeftMotor);
         reverse(backRightMotor);
+
     }
 
     static void driveWithEncoders(double movePower, double moveDistanceInInches) {
@@ -130,7 +131,6 @@ public abstract class Robot extends OpMode {
 
     }
 
-
     static void setMotorsPowers(double power, DcMotor[] motors) {
 
         for (DcMotor d : motors)
@@ -150,11 +150,10 @@ public abstract class Robot extends OpMode {
 
         setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, DRIVE_BASE_MOTORS);
 
-        while ((Math.abs(frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) > ENCODER_TOLERANCE) || (Math.abs(backRightMotor.getCurrentPosition() - backRightMotor.getTargetPosition()) > ENCODER_TOLERANCE)) {
+        while ((Math.abs(frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) > ENCODER_TOLERANCE) && (Math.abs(backRightMotor.getCurrentPosition() - backRightMotor.getTargetPosition()) > ENCODER_TOLERANCE))
 
-            setMotorsPowers(power, new DcMotor[]{frontLeftMotor, backLeftMotor});
-            setMotorsPowers(-power, new DcMotor[]{frontRightMotor, backRightMotor});
-        }
+            setMotorsPowers(power, DRIVE_BASE_MOTORS);
+
         setMotorsPowers(0, DRIVE_BASE_MOTORS);
 
     }
@@ -219,13 +218,6 @@ public abstract class Robot extends OpMode {
                 (AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle % 360;
     }
 
-    double calculateInches() {
-
-        if (vuMark == RelicRecoveryVuMark.LEFT) return CRYPTOBOX_LEFT_DISTANCE;
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) return CRYPTOBOX_RIGHT_DISTANCE;
-        else return CRYPTOBOX_CENTER_DISTANCE;
-    }
-
     abstract RobotPosition startingPosition();
 
     //true for Autonomous, false for TeleOp
@@ -233,7 +225,7 @@ public abstract class Robot extends OpMode {
 
     void writeTelemetry(Object status) {
 
-        telemetry.addData(status.toString(), "");
+        telemetry.addData("Status", status.toString());
         telemetry.update();
     }
 
@@ -246,12 +238,14 @@ public abstract class Robot extends OpMode {
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");/*
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+        collectionMotor = hardwareMap.get(DcMotor.class, "collectionMotor");
+        deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
+        relicExtension = hardwareMap.get(DcMotor.class, "relicExtension");
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
-
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //one set of motors has to be reversed because they are facing a different way
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -333,5 +327,3 @@ public abstract class Robot extends OpMode {
         setMotorsModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER, ALL_MOTORS);
     }
 }
-
-

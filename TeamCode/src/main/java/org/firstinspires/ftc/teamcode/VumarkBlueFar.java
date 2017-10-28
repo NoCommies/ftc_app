@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Created by 4924_Users on 10/26/2017.
@@ -11,37 +12,20 @@ public class VumarkBlueFar extends Robot {
 
     boolean isFinished = false;
 
-    {
+    public void init() {
 
+        super.init();
         CRYPTOBOX_CENTER_DISTANCE = 16;
-    }
+        if (STARTING_POSITION.isBlue()) { //cryptobox is reversed when colors change
 
-    //initializing CRYPTOBOX_LEFT and RIGHT DISTANCE
-    {
-        if (STARTING_POSITION.isNear()) {
+            CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
+            CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
+        } else {
 
-            if (STARTING_POSITION.isBlue()) { //cryptobox is reversed when colors change
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-            } else {
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-            }
-        } else { //STARTING_POSITION.isFar()
-
-            CRYPTOBOX_LEFT_DISTANCE = -1;
-            CRYPTOBOX_RIGHT_DISTANCE = -1;
+            CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
+            CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
         }
-    }
 
-    double calculateInches() {
-
-        return CRYPTOBOX_RIGHT_DISTANCE;
-        /*if (vuMark == RelicRecoveryVuMark.LEFT) return CRYPTOBOX_LEFT_DISTANCE;
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) return CRYPTOBOX_RIGHT_DISTANCE;
-        else return CRYPTOBOX_CENTER_DISTANCE;*/
     }
 
     @Override
@@ -49,12 +33,46 @@ public class VumarkBlueFar extends Robot {
 
         super.loop();
         if (!isFinished) {
-
-            driveWithEncoders(DRIVE_POWER, 29);
+            /*driveWithEncoders(DRIVE_POWER, 29);
             turnToPosition(TURN_POWER, 90);
             driveWithEncoders(DRIVE_POWER, calculateInches());
             turnToPosition(TURN_POWER, 0);
+            isFinished = true;*/
+
+            driveWithEncoders(DRIVE_POWER, 15);
+            setMotorsTargets(22, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            //setMotorsTargets(840, new DcMotor[]{backRightMotor, frontRightMotor});
+
+            setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, new DcMotor[]{frontLeftMotor, backLeftMotor});
+
+            setMotorsPowers(TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            while ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) < 0) {
+
+                setMotorsPowers(-TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            }
+            while ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) > 10) {
+                setMotorsPowers(TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            }
+            setMotorsPowers(0, DRIVE_BASE_MOTORS);
+            driveWithEncoders(DRIVE_POWER, calculateInches());
+            setMotorsTargets(0, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            //setMotorsTargets(840, new DcMotor[]{backRightMotor, frontRightMotor});
+
+            setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, new DcMotor[]{frontLeftMotor, backLeftMotor});
+
+            setMotorsPowers(TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            while ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) < 0) {
+
+                setMotorsPowers(-TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            }
+            while ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) > 10) {
+                setMotorsPowers(TURN_POWER, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            }
+            setMotorsPowers(0, DRIVE_BASE_MOTORS);
+            turnToPosition(TURN_POWER, 0);
             isFinished = true;
+
+
         }
     }
 

@@ -1,5 +1,6 @@
 package ExperimentalClasses;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by 4924_Users on 9/30/2017.
  */
 
+@Disabled
 @TeleOp
 
 public class Ayca_Hello_World extends LinearOpMode {

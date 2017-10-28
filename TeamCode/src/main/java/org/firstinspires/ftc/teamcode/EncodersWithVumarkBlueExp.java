@@ -4,10 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * Created by 4924_Users on 9/30/2017.
+ * Created by 4924_Users on 10/28/2017.
  */
-@Autonomous(name = "VumarkBlueNear")
-public class EncodersWithVumarkBlue extends Robot {
+
+@Autonomous(name = "EncodersWithVumarkBlueExp")
+public class EncodersWithVumarkBlueExp extends Robot {
 
     boolean notFinished = true;
 
@@ -36,7 +37,6 @@ public class EncodersWithVumarkBlue extends Robot {
     }
 
 
-
     @Override
     public void start() {
 
@@ -50,19 +50,9 @@ public class EncodersWithVumarkBlue extends Robot {
         if (notFinished) {
             driveWithEncoders(DRIVE_POWER, calculateInches());
 
-            setMotorsTargets(22, new DcMotor[]{frontRightMotor, backRightMotor});
-            //setMotorsTargets(840, new DcMotor[]{backRightMotor, frontRightMotor});
-
-            setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, new DcMotor[]{frontRightMotor, backRightMotor});
-
-            setMotorsPowers(TURN_POWER, new DcMotor[]{frontRightMotor, backRightMotor});
-            while ((frontRightMotor.getCurrentPosition() - frontRightMotor.getTargetPosition()) < 0) {
-
-                setMotorsPowers(-TURN_POWER, new DcMotor[]{frontRightMotor, backRightMotor});
-            }
-            while ((frontRightMotor.getCurrentPosition() - frontRightMotor.getTargetPosition()) > 10) {
-                setMotorsPowers(TURN_POWER, new DcMotor[]{frontRightMotor, backRightMotor});
-            }
+            setMotorsTargets(-22, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, new DcMotor[]{frontLeftMotor, backLeftMotor});
+            turn(TURN_POWER, RotationalDirection.COUNTER_CLOCKWISE);
             setMotorsPowers(0, DRIVE_BASE_MOTORS);
         }
         notFinished = false;
