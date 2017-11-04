@@ -1,6 +1,7 @@
 package ExperimentalClasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 /**
  * Created by 4924_Users on 9/30/2017.
  */
+@Disabled
 @Autonomous(name = "TurnOneRotation")
 public class encoderOneRotation extends OpMode {
 

@@ -1,7 +1,10 @@
 package ExperimentalClasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -10,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Created by 4924_Users on 9/30/2017.
  */
+@Disabled
 @Autonomous(name = "fourwheelencoder")
 public class fourWheeledEncoderTest extends OpMode {
 
@@ -95,5 +99,39 @@ public class fourWheeledEncoderTest extends OpMode {
         if (vuMark == RelicRecoveryVuMark.LEFT) return 35.5 - 6.5;
         else if (vuMark == RelicRecoveryVuMark.RIGHT) return 35.5 + 6.5;
         else return 35.5; //CENTER or UNKNOWN
+    }
+
+    /**
+     * Created by 4924_Users on 10/11/2017.
+     */
+    @Autonomous(name = "Color sensor test")
+    public static class ColorSensorTest extends LinearOpMode {
+        public ColorSensor rightBeaconSensor;
+        public ColorSensor leftBeaconSensor;
+
+        @Override
+        public void runOpMode() {
+            int leftBlueReading = 0;
+            int rightRedReading = 0;
+            int rightBlueReading = 0;
+            int leftRedReading = 0;
+            if (leftBeaconSensor.red() > 0) {
+                leftRedReading = leftBeaconSensor.red();
+            }
+            if (leftBeaconSensor.blue() > 0) {
+                leftBlueReading = leftBeaconSensor.blue();
+            }
+            if (rightBeaconSensor.red() > 0) {
+                rightRedReading = rightBeaconSensor.red();
+            }
+            if (rightBeaconSensor.blue() > 0) {
+                rightBlueReading = rightBeaconSensor.blue();
+            }
+            telemetry.addData("Left color sensor red reading", leftRedReading);
+            telemetry.addData("Left color sensor blue reading", leftBlueReading);
+            telemetry.addData("Right color sensor red reading", rightRedReading);
+            telemetry.addData("Right color sensor blue reading", rightBlueReading);
+
+        }
     }
 }
