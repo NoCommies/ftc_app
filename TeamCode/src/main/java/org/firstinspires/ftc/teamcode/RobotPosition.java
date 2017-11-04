@@ -40,3 +40,21 @@ public enum RobotPosition {
         return this.position == RelativePosition.FAR;
     }
 }
+
+enum RelativePosition {//starting position of the robot -- whether it is close or far from
+    // relic scoring zone
+    NEAR,
+    FAR,
+}
+
+enum Color { //starting position of the robot -- its alliance color
+    RED,
+    BLUE;
+
+    Color invert() {
+
+        return this == RED ? BLUE : RED;
+    }
+}
+
+

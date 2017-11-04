@@ -3,20 +3,18 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * Created by 4924_Users on 10/26/2017.
+ * Created by 4924_Users on 9/30/2017.
  */
+@Autonomous(name = "VumarkBlueNear")
+public class RR_BlueNear extends Robot {
 
-@Autonomous(name = "VumarkBlueFar")
-public class VumarkBlueFar extends Robot {
-
-    boolean isFinished = false;
+    boolean notFinished = true;
 
     {
 
-        CRYPTOBOX_CENTER_DISTANCE = 16;
+        CRYPTOBOX_CENTER_DISTANCE = 35.5;
     }
 
-    //initializing CRYPTOBOX_LEFT and RIGHT DISTANCE
     {
         if (STARTING_POSITION.isNear()) {
 
@@ -36,31 +34,35 @@ public class VumarkBlueFar extends Robot {
         }
     }
 
-    double calculateInches() {
 
-        return CRYPTOBOX_RIGHT_DISTANCE;
-        /*if (vuMark == RelicRecoveryVuMark.LEFT) return CRYPTOBOX_LEFT_DISTANCE;
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) return CRYPTOBOX_RIGHT_DISTANCE;
-        else return CRYPTOBOX_CENTER_DISTANCE;*/
+
+    @Override
+    public void start() {
+
+        super.start();
     }
 
     @Override
     public void loop() {
 
         super.loop();
-        if (!isFinished) {
-
-            driveWithEncoders(DRIVE_POWER, 29);
-            turnToPosition(TURN_POWER, 90);
+        if (notFinished) {
+            /*
             driveWithEncoders(DRIVE_POWER, calculateInches());
-            turnToPosition(TURN_POWER, 0);
-            isFinished = true;
+            turnToPosition(TURN_POWER, -90);
+            setMotorsPowers(0, DRIVE_BASE_MOTORS);
+            driveWithEncoders(DRIVE_POWER, 5);
+            collectionMotor.setPower(-1);
+            */
+            turnWithEncoders(TURN_POWER, 22);// around 90 degrees
+            notFinished = false;
         }
     }
 
-    RobotPosition startingPosition() {
+    @Override
+    public RobotPosition startingPosition() {
 
-        return RobotPosition.BLUE_FAR;
+        return RobotPosition.BLUE_NEAR;
     }
 
     public boolean isAutonomous() {

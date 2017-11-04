@@ -6,22 +6,25 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Created by 4924_Users on 10/13/2017.
  */
 
-@Autonomous(name = "EncodersWithVumarkRed")
-public class EncodersWithVumarkRed extends EncodersWithVumarkBlue {
+@Autonomous(name = "VumarkRedNear")
+public class RR_RedNear extends RR_BlueNear {
 
-    @Override
-    public void start() {
-
-    }
+    boolean notFinished = true;
 
     @Override
     public void loop() {
 
+        super.loop();
     }
 
     @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.RED_NEAR;
+    }
+
+    public boolean isAutonomous() {
+
+        return true;
     }
 }

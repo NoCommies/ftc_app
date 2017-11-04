@@ -53,7 +53,7 @@ public class RR_Holonomic extends OpMode {
     private DcMotor deliveryMotor = null;
     private Servo barServo = null;
     private CRServo elbowServo = null;
-    double clawClosePosition = 0.5;
+    private Servo clawServo = null;
     /*
 
      * Code to run ONCE when the driver hits INIT
@@ -61,7 +61,6 @@ public class RR_Holonomic extends OpMode {
     @Override
     public void init() {
         final double MIDDLEPOSITION180 = 0.0;
-        //final double MIDDLE_POSITION_CONTINOUS = 0.0;
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -76,6 +75,7 @@ public class RR_Holonomic extends OpMode {
         deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
         barServo = hardwareMap.get(Servo.class, "barServo");
         elbowServo = hardwareMap.get(CRServo.class, "elbowServo");
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -87,6 +87,7 @@ public class RR_Holonomic extends OpMode {
         relicExtension.setDirection(DcMotor.Direction.FORWARD);
         deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
         barServo.setPosition(MIDDLEPOSITION180);
+        clawServo.setPosition(MIDDLEPOSITION180);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -113,12 +114,10 @@ public class RR_Holonomic extends OpMode {
     public void loop() {
         double collectionPower = 0.0;
         double deliveryPower = 0.0;
-        boolean barDownPosition;
         final double BARMOVE = 1.0;
-        final double BARCLOSE = 0.0;
-        boolean elbowBent;
-        //final double ELBOWMOVE = 0.5;
-        //final double ELBOWSTRAIGHTVALUE = 0.0;
+        final double BARDOWN = 0.0;
+        final double CLAWOPEN = 1.0;
+        final double CLAWCLOSED = 0.0;
         double position = 0.0;
         double clawPosition = 0.0;
 
@@ -148,6 +147,7 @@ public class RR_Holonomic extends OpMode {
         double linearSlide =  (gamepad2.left_stick_y);
          //this extends the linearSlide using the measuring tape to extend it
         boolean halfSpeed = gamepad1.left_bumper;
+        double elbow = gamepad2.right_stick_y;
 
         if (collectionPowerUp) {
             //if we want it to collect, we set collectionPower to 1
@@ -158,17 +158,19 @@ public class RR_Holonomic extends OpMode {
         }
 
         if (gamepad2.left_bumper) {
-            barServo.setPosition(BARCLOSE + BARMOVE);
-            clawPosition = BARCLOSE + BARMOVE;
-        } else  {
-            barServo.setPosition(BARCLOSE);
-            clawPosition = BARCLOSE;
+            barServo.setPosition(BARDOWN + BARMOVE);
+            position = BARDOWN + BARMOVE;
+        } else {
+            barServo.setPosition(BARDOWN);
+            position = BARDOWN;
         }
 
         if (gamepad2.right_bumper) {
-            elbowServo.setPower(gamepad2.right_trigger);
-        } else {
-            elbowServo.setPower(-gamepad2.left_trigger);
+            clawServo.setPosition(CLAWCLOSED + CLAWOPEN);
+            clawPosition = CLAWCLOSED + CLAWOPEN;
+         } else  {
+            clawServo.setPosition(CLAWOPEN);
+            clawPosition = CLAWOPEN;
         }
 
         if (deliveryUp) {
@@ -201,11 +203,12 @@ public class RR_Holonomic extends OpMode {
         collectionMotor.setPower(collectionPower);
         relicExtension.setPower(linearSlide);
         deliveryMotor.setPower(deliveryPower);
+        elbowServo.setPower(elbow);
 
         // Show the elapsed game time
-       // telemetry.addData("Status", "Run Time: " + runtime.toString());
+       // telemetry.addData("Status", "Run Time: " + runtime.toString());b
         telemetry.addData("Slow Mode", halfSpeed);
-        telemetry.addData("Elbow Servo", "Continous Position" + position);
+        telemetry.addData("Bar Servo", "Continous Position" + position);
         telemetry.addData("Claw Servo", "Continous Position" + clawPosition);
 
         turnLeft = 0;
