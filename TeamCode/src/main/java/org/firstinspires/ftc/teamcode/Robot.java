@@ -196,14 +196,14 @@ public abstract class Robot extends OpMode {
 
         setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, DRIVE_BASE_MOTORS);
         //setMotorsModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER, new DcMotor[] {frontRightMotor, backLeftMotor, backRightMotor});
-
-        //if ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) < -5) {
+        while (Math.abs(DRIVE_BASE_MOTORS[0].getCurrentPosition() - DRIVE_BASE_MOTORS[0].getTargetPosition()) > ENCODER_TOLERANCE) {
 
         frontLeftMotor.setPower(-turnPower);
         frontRightMotor.setPower(turnPower);
         backLeftMotor.setPower(-turnPower);
-        backRightMotor.setPower(turnPower);/*
-        }
+        backRightMotor.setPower(turnPower);
+        writeTelemetry(DRIVE_BASE_MOTORS[0].getTargetPosition());
+        }/*
         if ((frontLeftMotor.getCurrentPosition() - frontLeftMotor.getTargetPosition()) > 5) {
             turn(turnPower, RotationalDirection.COUNTER_CLOCKWISE);
         }*/

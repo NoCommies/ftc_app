@@ -54,7 +54,7 @@ public class RR_BlueNear extends Robot {
             driveWithEncoders(DRIVE_POWER, 5);
             collectionMotor.setPower(-1);
             */
-            turnWithEncoders(TURN_POWER, 22);// around 90 degrees
+            turnWithEncoders(TURN_POWER, -22);// around 90 degrees
             notFinished = false;
         }
     }

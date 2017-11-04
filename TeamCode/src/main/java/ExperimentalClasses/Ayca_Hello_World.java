@@ -13,9 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by 4924_Users on 9/30/2017.
  */
 
-@Disabled
 @TeleOp
-
+@Disabled
 public class Ayca_Hello_World extends LinearOpMode {
     private Gyroscope imu;
     private DcMotor motorTest;

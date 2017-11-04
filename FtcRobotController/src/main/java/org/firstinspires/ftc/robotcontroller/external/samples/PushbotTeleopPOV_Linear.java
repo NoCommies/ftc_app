@@ -29,6 +29,15 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
  * All device access is managed through the HardwarePushbot class.
@@ -42,24 +51,24 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-/*
+
 @TeleOp(name="Pushbot: Teleop POV", group="Pushbot")
 @Disabled
 public class PushbotTeleopPOV_Linear extends LinearOpMode {
 
-    /* Declare OpMode members. *//*
-    HardwarePushbot robot           = new HardwarePushbot();   // Use a Pushbot's hardware
-                                                               // could also use HardwarePushbotMatrix class.
-    double          clawOffset      = 0;                       // Servo mid position
-    final double    CLAW_SPEED      = 0.02 ;                   // sets rate to move servo
+    //Declare OpMode members.//*
+    HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
+    // could also use HardwarePushbotMatrix class.
+    double clawOffset = 0;                       // Servo mid position
+    final double CLAW_SPEED = 0.02;                   // sets rate to move servo
 
     @Override
     public void runOpMode() {
-        double left;
-        double right;
-        double drive;
-        double turn;
-        double max;
+        //double left;
+        //double right;
+        //double drive;
+        //double turn;
+        //double max;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -127,4 +136,7 @@ public class PushbotTeleopPOV_Linear extends LinearOpMode {
             sleep(50);
         }
     }
-}*/
+}
+*/
+    }
+}

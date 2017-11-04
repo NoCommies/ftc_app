@@ -60,7 +60,7 @@ public class RR_Holonomic extends OpMode {
      */
     @Override
     public void init() {
-        final double MIDDLEPOSITION180 = 0.0;
+        final double MIDDLEPOSITION180 = 1.0;
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -114,8 +114,8 @@ public class RR_Holonomic extends OpMode {
     public void loop() {
         double collectionPower = 0.0;
         double deliveryPower = 0.0;
-        final double BARMOVE = 1.0;
-        final double BARDOWN = 0.0;
+        final double BARMOVE = -1.0;
+        final double BARDOWN = 1.0;
         final double CLAWOPEN = 1.0;
         final double CLAWCLOSED = 0.0;
         double position = 0.0;
@@ -208,8 +208,8 @@ public class RR_Holonomic extends OpMode {
         // Show the elapsed game time
        // telemetry.addData("Status", "Run Time: " + runtime.toString());b
         telemetry.addData("Slow Mode", halfSpeed);
-        telemetry.addData("Bar Servo", "Continous Position" + position);
-        telemetry.addData("Claw Servo", "Continous Position" + clawPosition);
+        telemetry.addData("Bar Servo", "Position" + position);
+        telemetry.addData("Claw Servo", "Position" + clawPosition);
 
         turnLeft = 0;
         turnRight = 0;

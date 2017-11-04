@@ -24,18 +24,10 @@ public class TurnGyroTest extends Robot {
     public void loop() {
 
         super.loop();
-        if (elapsedTime.time() <= 5) {
-            telemetry.addData("Heading", getHeading());
-            telemetry.update();
-        }
-
-        if (!finished) {
-
-            turnToPosition(TURN_POWER, 90);
-            telemetry.addData("Heading", getHeading() - offset);
-            telemetry.update();
-            finished = true;
-        }
+        telemetry.addData("Heading", getHeading());
+        telemetry.addData("Offset", offset);
+        telemetry.addData("H+O", getHeading() - offset);
+        telemetry.update();
     }
 
     @Override

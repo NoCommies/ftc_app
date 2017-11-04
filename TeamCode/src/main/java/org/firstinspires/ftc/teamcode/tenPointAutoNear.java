@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * Created by 4924_Users on 11/3/2017.
+ * Created by 4924_Users on 11/4/2017.
  */
-@Autonomous(name = "tenPointAutoFar")
-public class tenPointAuto extends Robot {
+@Autonomous(name="tenPointAutoNear")
+public class tenPointAutoNear extends Robot{
 
     boolean notFinished = true;
     boolean notFinallyFinished = true;
@@ -22,7 +22,7 @@ public class tenPointAuto extends Robot {
 
         super.loop();
         if (notFinished) {
-            driveWithEncoders(DRIVE_POWER, 30);
+            driveWithEncoders(DRIVE_POWER, 20);
             notFinished = false;
         }
         while (elapsedTime.time() <= 3) {
