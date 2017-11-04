@@ -53,7 +53,7 @@ public class RR_Holonomic extends OpMode {
     private DcMotor deliveryMotor = null;
     private Servo barServo = null;
     private CRServo elbowServo = null;
-    private Servo clawServo = null;
+    private CRServo clawServo = null;
     /*
 
      * Code to run ONCE when the driver hits INIT
@@ -75,7 +75,7 @@ public class RR_Holonomic extends OpMode {
         deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
         barServo = hardwareMap.get(Servo.class, "barServo");
         elbowServo = hardwareMap.get(CRServo.class, "elbowServo");
-        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        clawServo = hardwareMap.get(CRServo.class, "clawServo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -87,7 +87,8 @@ public class RR_Holonomic extends OpMode {
         relicExtension.setDirection(DcMotor.Direction.FORWARD);
         deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
         barServo.setPosition(MIDDLEPOSITION180);
-        clawServo.setPosition(MIDDLEPOSITION180);
+        clawServo.setPower(0);
+        elbowServo.setPower(0);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -116,8 +117,6 @@ public class RR_Holonomic extends OpMode {
         double deliveryPower = 0.0;
         final double BARMOVE = -1.0;
         final double BARDOWN = 1.0;
-        final double CLAWOPEN = 1.0;
-        final double CLAWCLOSED = 0.0;
         double position = 0.0;
         double clawPosition = 0.0;
 
@@ -140,14 +139,15 @@ public class RR_Holonomic extends OpMode {
         //collectionPowerUp is dependent on whether or not we want the collection to collect
         boolean collectionPowerDown = gamepad2.a;
         //collectionPowerDown is dependent on whether or not we want the collection deliver (Push downwards)
-        boolean deliveryUp = gamepad1.b;
+        boolean deliveryUp = gamepad2.dpad_up;
         //deliveryUp is dependent on whether or not we want the delivery to deliver
-        boolean deliveryDown = gamepad1.a;
+        boolean deliveryDown = gamepad2.dpad_down;
         //deliveryDown is dependent on whether or not we want the delivery to go downwards
         double linearSlide =  (gamepad2.left_stick_y);
          //this extends the linearSlide using the measuring tape to extend it
         boolean halfSpeed = gamepad1.left_bumper;
-        double elbow = gamepad2.right_stick_y;
+        double elbow = gamepad1.right_stick_y;
+        double clawPower = gamepad2.right_stick_y;
 
         if (collectionPowerUp) {
             //if we want it to collect, we set collectionPower to 1
@@ -165,14 +165,6 @@ public class RR_Holonomic extends OpMode {
             position = BARDOWN;
         }
 
-        if (gamepad2.right_bumper) {
-            clawServo.setPosition(CLAWCLOSED + CLAWOPEN);
-            clawPosition = CLAWCLOSED + CLAWOPEN;
-         } else  {
-            clawServo.setPosition(CLAWOPEN);
-            clawPosition = CLAWOPEN;
-        }
-
         if (deliveryUp) {
             deliveryPower = -1;
         } else if (deliveryDown) {
@@ -188,10 +180,10 @@ public class RR_Holonomic extends OpMode {
         double backLeftPower =  Range.clip(drive + holonomic + turnRight - turnLeft, -1.0, 1.0);
 
         if (halfSpeed) {
-            frontLeftPower = 0.5 * (frontLeftPower);
-            frontRightPower = 0.5 * (frontRightPower);
-            backRightPower = 0.5 * (backRightPower);
-            backLeftPower = 0.5 * (backLeftPower);
+            frontLeftPower = 0.2 * (frontLeftPower);
+            frontRightPower = 0.2 * (frontRightPower);
+            backRightPower = 0.2 * (backRightPower);
+            backLeftPower = 0.2 * (backLeftPower);
 
         }
 
@@ -204,6 +196,8 @@ public class RR_Holonomic extends OpMode {
         relicExtension.setPower(linearSlide);
         deliveryMotor.setPower(deliveryPower);
         elbowServo.setPower(elbow);
+        clawServo.setPower(clawPower);
+
 
         // Show the elapsed game time
        // telemetry.addData("Status", "Run Time: " + runtime.toString());b
