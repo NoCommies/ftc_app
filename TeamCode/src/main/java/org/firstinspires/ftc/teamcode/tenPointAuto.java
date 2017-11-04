@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by 4924_Users on 11/3/2017.
  */
+@Disabled
 @Autonomous(name = "tenPointAutoFar")
 public class tenPointAuto extends Robot {
 

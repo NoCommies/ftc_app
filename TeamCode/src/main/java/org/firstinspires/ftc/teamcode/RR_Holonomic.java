@@ -140,9 +140,9 @@ public class RR_Holonomic extends OpMode {
         //collectionPowerUp is dependent on whether or not we want the collection to collect
         boolean collectionPowerDown = gamepad2.a;
         //collectionPowerDown is dependent on whether or not we want the collection deliver (Push downwards)
-        boolean deliveryUp = gamepad1.b;
+        boolean deliveryUp = gamepad2.dpad_up;
         //deliveryUp is dependent on whether or not we want the delivery to deliver
-        boolean deliveryDown = gamepad1.a;
+        boolean deliveryDown = gamepad2.dpad_down;
         //deliveryDown is dependent on whether or not we want the delivery to go downwards
         double linearSlide =  (gamepad2.left_stick_y);
          //this extends the linearSlide using the measuring tape to extend it
