@@ -98,7 +98,7 @@ public abstract class Robot extends OpMode {
     }
 
     {
-        msStuckDetectInit = 7500;
+        msStuckDetectInit = 10000;
         msStuckDetectLoop = 15000;
     }
 
@@ -198,6 +198,7 @@ public abstract class Robot extends OpMode {
         //setMotorsModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER, new DcMotor[] {frontRightMotor, backLeftMotor, backRightMotor});
         while (Math.abs(DRIVE_BASE_MOTORS[0].getCurrentPosition() - DRIVE_BASE_MOTORS[0].getTargetPosition()) > ENCODER_TOLERANCE) {
 
+        writeTelemetry(getHeading());
         frontLeftMotor.setPower(-turnPower);
         frontRightMotor.setPower(turnPower);
         backLeftMotor.setPower(-turnPower);
@@ -253,7 +254,6 @@ public abstract class Robot extends OpMode {
         collectionMotor = hardwareMap.get(DcMotor.class, "collectionMotor");
         relicExtension = hardwareMap.get(DcMotor.class, "relicExtension");
         deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
-        barServo = hardwareMap.get(Servo.class, "barServo");
         elbowServo = hardwareMap.get(CRServo.class, "elbowServo");
 
 
@@ -265,7 +265,6 @@ public abstract class Robot extends OpMode {
         collectionMotor.setDirection(DcMotor.Direction.FORWARD);
         relicExtension.setDirection(DcMotor.Direction.FORWARD);
         deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
-        barServo.setPosition(0.5);
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

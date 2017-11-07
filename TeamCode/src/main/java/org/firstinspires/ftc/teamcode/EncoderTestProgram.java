@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * Created by 4924_Users on 10/28/2017.
+ * Created by 4924_Users on 9/30/2017.
  */
-
-@Autonomous(name = "EncodersWithVumarkBlueExp")
-public class EncodersWithVumarkBlueExp extends Robot {
+@Autonomous(name = "VumarkBlueNear")
+public class EncoderTestProgram extends Robot {
 
     boolean notFinished = true;
 
@@ -37,6 +35,7 @@ public class EncodersWithVumarkBlueExp extends Robot {
     }
 
 
+
     @Override
     public void start() {
 
@@ -48,14 +47,24 @@ public class EncodersWithVumarkBlueExp extends Robot {
 
         super.loop();
         if (notFinished) {
+            /*
             driveWithEncoders(DRIVE_POWER, calculateInches());
-
-            setMotorsTargets(-22, new DcMotor[]{frontLeftMotor, backLeftMotor});
-            setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, new DcMotor[]{frontLeftMotor, backLeftMotor});
-            turn(TURN_POWER, RotationalDirection.COUNTER_CLOCKWISE);
+            turnToPosition(TURN_POWER, -90);
             setMotorsPowers(0, DRIVE_BASE_MOTORS);
+            driveWithEncoders(DRIVE_POWER, 5);
+            collectionMotor.setPower(-1);
+            */
+            turnWithEncoders(TURN_POWER, -17);
+            turnWithEncoders(TURN_POWER, 17);
+            turnWithEncoders(TURN_POWER, -18);
+            turnWithEncoders(TURN_POWER, 18);
+            turnWithEncoders(TURN_POWER, -19);
+            turnWithEncoders(TURN_POWER, 19);
+            turnWithEncoders(TURN_POWER, -20);
+            turnWithEncoders(TURN_POWER, 20);
+
+            notFinished = false;
         }
-        notFinished = false;
     }
 
     @Override
