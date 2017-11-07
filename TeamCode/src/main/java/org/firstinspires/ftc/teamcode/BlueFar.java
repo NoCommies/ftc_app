@@ -9,16 +9,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "BlueFar")
 public class BlueFar extends Robot {
 
+    @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.BLUE_FAR;
     }
 
+    @Override
     public boolean isAutonomous() {
 
         return true;
     }
 
+    @Override
     public void init() {
 
         super.init();
@@ -35,21 +38,23 @@ public class BlueFar extends Robot {
     }
 
     boolean isFinished = false;
+
+    @Override
     public void loop() {
 
         super.loop();
         if(!isFinished) {
 
-            driveWithEncoders(DRIVE_POWER, 29);
+            driveWithEncoders(DRIVE_POWER, 26);
             turnWithEncoders(TURN_POWER, 18);
             driveWithEncoders(DRIVE_POWER, calculateInches());
             if(startingPosition().isRed()) reverseDriveBase();
-            turnWithEncoders(TURN_POWER, -18);
+            turnWithEncoders(TURN_POWER, -18.5);
             elapsedTime.reset();
             while(elapsedTime.time() < 3) collectionMotor.setPower(-0.5);
             collectionMotor.setPower(0);
-            driveWithEncoders(DRIVE_POWER, 5);
-            driveWithEncoders(DRIVE_POWER, -3);
+            driveWithEncoders(DRIVE_POWER/2, 10);
+            driveWithEncoders(DRIVE_POWER, -6);
             isFinished = true;
         }
     }

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "BlueNear")
 public class BlueNear extends Robot {
 
-
+    @Override
     public void init() {
 
         super.init();
@@ -38,18 +38,20 @@ public class BlueNear extends Robot {
         }
     }
 
-
+    @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.BLUE_NEAR;
     }
 
+    @Override
     public boolean isAutonomous() {
 
         return true;
     }
 
     boolean isFinished = false;
+    @Override
     public void loop() {
 
         if(!isFinished) {
@@ -57,13 +59,12 @@ public class BlueNear extends Robot {
             driveWithEncoders(DRIVE_POWER, calculateInches());
             if(startingPosition().isRed()) reverseDriveBase();
             turnWithEncoders(TURN_POWER, -18);
-            driveWithEncoders(DRIVE_POWER, 10);
+            driveWithEncoders(DRIVE_POWER, 5);
             elapsedTime.reset();
             while(elapsedTime.time() < 3) collectionMotor.setPower(-0.5);
             collectionMotor.setPower(0);
-
-            driveWithEncoders(DRIVE_POWER, 5);
-            driveWithEncoders(DRIVE_POWER, -3);
+            driveWithEncoders(DRIVE_POWER/2, 10);
+            driveWithEncoders(DRIVE_POWER, -6);
             isFinished = true;
         }
     }

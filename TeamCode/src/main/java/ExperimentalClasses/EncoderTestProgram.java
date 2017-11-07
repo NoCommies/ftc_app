@@ -1,40 +1,19 @@
-package org.firstinspires.ftc.teamcode;
+package ExperimentalClasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotPosition;
 
 /**
  * Created by 4924_Users on 9/30/2017.
  */
-@Autonomous(name = "VumarkBlueNear")
+@Disabled
+@Autonomous(name = "EncoderTurningTest")
 public class EncoderTestProgram extends Robot {
 
     boolean notFinished = true;
-
-    {
-
-        CRYPTOBOX_CENTER_DISTANCE = 35.5;
-    }
-
-    {
-        if (STARTING_POSITION.isNear()) {
-
-            if (STARTING_POSITION.isBlue()) { //cryptobox is reversed when colors change
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-            } else {
-
-                CRYPTOBOX_LEFT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE + CRYPTOBOX_OFFSET;
-                CRYPTOBOX_RIGHT_DISTANCE = CRYPTOBOX_CENTER_DISTANCE - CRYPTOBOX_OFFSET;
-            }
-        } else { //STARTING_POSITION.isFar()
-
-            CRYPTOBOX_LEFT_DISTANCE = -1;
-            CRYPTOBOX_RIGHT_DISTANCE = -1;
-        }
-    }
-
-
 
     @Override
     public void start() {
