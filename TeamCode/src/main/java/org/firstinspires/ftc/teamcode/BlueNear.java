@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "BlueNear")
 public class BlueNear extends Robot {
 
-    @Override
     public void init() {
 
         super.init();
@@ -38,20 +37,17 @@ public class BlueNear extends Robot {
         }
     }
 
-    @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.BLUE_NEAR;
     }
 
-    @Override
     public boolean isAutonomous() {
 
         return true;
     }
 
     boolean isFinished = false;
-    @Override
     public void loop() {
 
         if(!isFinished) {

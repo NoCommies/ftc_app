@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "RedFar")
 public class RedFar extends BlueFar {
 
-    @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.RED_FAR;

@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "RedNear")
 public class RedNear extends BlueNear {
 
-    @Override
     public RobotPosition startingPosition() {
 
         return RobotPosition.RED_NEAR;
