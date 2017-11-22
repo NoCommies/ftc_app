@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
  * Created by 4924_Users on 11/4/2017.
  */
 
+@Disabled
 @Autonomous(name = "BlueFar")
 public class BlueFar extends Robot {
 
@@ -46,7 +49,7 @@ public class BlueFar extends Robot {
             turnWithEncoders(TURN_POWER, 18);
             driveWithEncoders(DRIVE_POWER, calculateInches());
             if(startingPosition().isRed()) reverseDriveBase();
-            turnWithEncoders(TURN_POWER, -18.5);
+            turnWithEncoders(TURN_POWER, -19);
             elapsedTime.reset();
             while(elapsedTime.time() < 3) collectionMotor.setPower(-0.5);
             collectionMotor.setPower(0);
