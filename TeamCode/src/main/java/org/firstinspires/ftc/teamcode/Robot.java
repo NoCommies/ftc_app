@@ -310,19 +310,16 @@ public abstract class Robot extends OpMode {
 
         if (isAutonomous()) { //below is Autonomous-only code, this removes unnecessary loading
 
-            vuforiaParameters.vuforiaLicenseKey = "AdDqKyD/////AAAAGQ/rpKTVlUiMmdwxDFRT5LiD8kI3QucN9xL8BbQRw/rYsleEjKBm/GOQB4GnSmvyzTFNFOBfZQ9o06uen5gYZvJthDx8OSVm78QegaFqHEGPjDRtqIAuLxz+12HVQXbIutqXfR595SNIl0yKUbbXFTq21ElXEDDNwO0Lv8ptnJPLib85+omkc5c8xfG6oNIhFg+sPIfCrpFACHdrr23MpY8AzLHiYleHnhpyY/y/IqsXw7CYPV2kKY70GEwH8I0MGxBw8tw8EoYpXk4vxUzHAPfgvBDztFz3x9fpcxoeqb0jl2L7GB7Aq7u+Sea+g4FoTG/9FD4rEy4I/Lz+OjdbE2eEUCGnyy10Q5o3AGG5R3cW";
+            vuforiaParameters.vuforiaLicenseKey = "AfgNWRP/////AAAAGTvgaD9NHEcegp9M9gVfWchUPuYO0sndvqbZcgtG8KGB6PCuQ3QWbV9b4twhV5fD/kl/3Iblwrmzj4Vw8DnXF6MS8PbHDXTMrzndAccgzFu+7cej0vmkb657jYHPtLz4Y7U5zIdyPHkbPz+9gRo9gtaUGBa3p8mezZd2qLlJNc4hcv1tcP4hRXsIPEf++0q7tVIco0JGNnd76A7G0REDE9/IKqaO32xvwPnPNS7C+NqcHdZjfRQMjy2FRWzfang2iz9z/Gu20FzSv2n3fhIEWWqhjg7c2UjVeteWTVdDX3Hrxzb/eDJtXfl6V7fPcmXz1dZjQZrsF2pk87O4cRus9N/SYC12cwsVA+HabGLO0Z1R";
             //license key set, necessary for vuforia code to be used
             vuforiaParameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT; //uses front camera of Robot Controller for detection
             //if above code is changed to ...CameraDirection.BACK;, the back-facing camera will be used instead
-
-            //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            //VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParameters);
             //if above code is enabled, the Driver Station will display the camera reading from the Robot Controller on its screen
-
-            vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParameters); //vuforia object initialized based on set vuforiaParameters
             relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
             relicTemplate = relicTrackables.get(0);
             relicTrackables.activate(); //start listening for camera's data
+
         }
     }
 
@@ -332,6 +329,8 @@ public abstract class Robot extends OpMode {
         if (isAutonomous()) {
 
             vuMark = RelicRecoveryVuMark.from(relicTemplate); //LEFT, CENTER, or RIGHT if read, UNKNOWN if undetermined reading
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
             telemetry.addData("vuMark", vuMark.toString()); //LEFT, CENTER, or RIGHT, useful for debugging
             telemetry.addData("Status", "init_loop");
             telemetry.update();

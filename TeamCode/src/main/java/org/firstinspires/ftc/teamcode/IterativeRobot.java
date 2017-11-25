@@ -77,6 +77,7 @@ public abstract class IterativeRobot extends LinearOpMode {
     // from cryptobox center in inches, should be 6.5, but exaggerated for testing
     static double CRYPTOBOX_LEFT_DISTANCE;
     static double CRYPTOBOX_RIGHT_DISTANCE;
+    protected int cameraMonitorViewId;
     /* MOTORS */
     static DcMotor frontLeftMotor;
     static DcMotor frontRightMotor;

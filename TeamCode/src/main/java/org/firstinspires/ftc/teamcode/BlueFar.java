@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  * Created by 4924_Users on 11/4/2017.
  */
 
-@Disabled
-@Autonomous(name = "BlueFar")
+
+@Autonomous(name = "BlueFarNonLinear")
 public class BlueFar extends Robot {
 
     public RobotPosition startingPosition() {
