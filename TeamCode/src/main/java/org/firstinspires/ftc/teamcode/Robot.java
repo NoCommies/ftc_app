@@ -91,6 +91,9 @@ public abstract class Robot extends OpMode {
     private DcMotor deliveryMotor;
     private Servo barServo;
     private CRServo elbowServo;
+    protected int stateIndex = 0;
+    protected int currentPathSegmentIndex = 0;
+    protected boolean stateStarted = false;
 
     {
 
@@ -100,6 +103,12 @@ public abstract class Robot extends OpMode {
     {
         msStuckDetectInit = 10000;
         msStuckDetectLoop = 15000;
+    }
+
+    public enum State {
+
+        STATE_INITIAL,
+        STATE_STOP,
     }
 
     static void reverse(DcMotor d) {
@@ -233,6 +242,28 @@ public abstract class Robot extends OpMode {
         staticTelemetry.update();
     }
 
+    protected void switchToNextState(int states) {
+
+        elapsedTimeForCurrentState.reset();
+        stateIndex += states;
+        stateStarted = false;
+
+        if (stateIndex >= stateList().length) {
+
+            stateIndex = stateList().length - 1;
+        }
+
+        if (stateIndex < 0) {
+
+            stateIndex = 0;
+        }
+
+        currentState = stateList()[stateIndex];
+        DbgLog.msg("State changed to " + currentState);
+    }
+
+
+
     double calculateInches() {
 
         if (vuMark == RelicRecoveryVuMark.LEFT) return CRYPTOBOX_LEFT_DISTANCE;
@@ -345,6 +376,27 @@ public abstract class Robot extends OpMode {
 
     @Override
     public void loop() {
+
+        switch (currentState) {
+
+            case STATE_INITIAL:
+
+                if (!turningGyro.isCalibrating()) {
+
+                    steadyHeading = heading;
+                    runWithoutEncoders();
+                    switchToNextState();
+                }
+
+                break;
+
+            case STATE_STOP:
+
+                startPath(stop);
+                TurnOffAllDriveMotors();
+
+                break;
+        }
 
     }
 
