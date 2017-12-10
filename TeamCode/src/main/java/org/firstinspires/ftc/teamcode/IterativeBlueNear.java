@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -16,6 +19,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 @Autonomous(name = "BlueNear", group = "Iterative")
 public class IterativeBlueNear extends IterativeRobot {
+
+    static Servo armY = null;
+    static Servo armX = null;
+    ColorSensor sensorColor;
+
 
     public RobotPosition startingPosition() {
 
@@ -40,6 +48,10 @@ public class IterativeBlueNear extends IterativeRobot {
         relicExtension = hardwareMap.get(DcMotor.class, "relicExtension");
         deliveryMotor = hardwareMap.get(DcMotor.class, "deliveryMotor");
         elbowServo = hardwareMap.get(CRServo.class, "elbowServo");
+        sensorColor = hardwareMap.get(ColorSensor.class, "color");
+        armY = hardwareMap.get(Servo.class, "armY");
+        armX = hardwareMap.get(Servo.class, "armX");
+
 
 
         //one set of motors has to be reversed because they are facing a different way
@@ -78,6 +90,8 @@ public class IterativeBlueNear extends IterativeRobot {
         ALL_MOTORS[2] = backLeftMotor;
         ALL_MOTORS[3] = backRightMotor;
 
+        boolean jewelDone = false;
+
         IMU_Parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IMU_Parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
@@ -107,7 +121,7 @@ public class IterativeBlueNear extends IterativeRobot {
         }
         {
 
-            CRYPTOBOX_CENTER_DISTANCE = 35.5;
+            CRYPTOBOX_CENTER_DISTANCE = 15.5;
         }
 
         {
@@ -143,21 +157,73 @@ public class IterativeBlueNear extends IterativeRobot {
         waitForStart();
         elapsedTime.reset();
 
+        armY.setPosition(0.65);
+        ElapsedTime opmodeRunTime = new ElapsedTime();
+        armY.setPosition(0.15);
+
         boolean isFinished = false;
+        boolean startGlyph = false;
+
 
         while(opModeIsActive()) {
+            if (opmodeRunTime.seconds() > 3 && !jewelDone) {
+                telemetry.addData("Red  ", sensorColor.red());
+                telemetry.addData("Green", sensorColor.green());
+                telemetry.addData("Blue ", sensorColor.blue());
+                telemetry.update();
 
-            if(!isFinished) {
+                if (sensorColor.red() > sensorColor.blue()) {
+                    if (startingPosition().isRed()){
+                        armX.setPosition(0.3);
+                        telemetry.addLine("Color Red; Kicking Blue; On my right");
+                    } else {
+                        armX.setPosition(0.8);
+                        telemetry.addLine("Color Red; Kicking Red; On my Left");
+                    }
+                    jewelDone = true;
+                    telemetry.update();
+                } else if (sensorColor.blue() > sensorColor.red()) {
+                    if (startingPosition().isBlue()){
+                        armX.setPosition(0.3);
+                        telemetry.addLine("Color Blue; Kicking Red; On my right ");
+                    } else {
+                        armX.setPosition(0.8);
+                        telemetry.addLine("Color Blue; Kicking Blue; On my left");
+                    }
+                    jewelDone = true;
+                    telemetry.update();
+                } else {
+                    telemetry.addLine("Too Close To Tell");
+                    jewelDone = true;
+                    telemetry.update();
+                }
+            }
+            if (opmodeRunTime.seconds() > 5 && jewelDone){
+                armX.setPosition(0.4);
+                armY.setPosition(0.65);
+                startGlyph=true;
+            }
 
+            if((!isFinished) && startGlyph) {
+
+                driveWithEncoders(DRIVE_POWER, 4);
+                driveWithEncoders(DRIVE_POWER, 10);
                 driveWithEncoders(DRIVE_POWER, calculateInches());
                 if(startingPosition().isRed()) reverseDriveBase();
                 turnWithEncoders(TURN_POWER, -18);
                 driveWithEncoders(DRIVE_POWER, 5);
                 elapsedTime.reset();
-                while(elapsedTime.time() < 3) collectionMotor.setPower(-0.5);
+                while((elapsedTime.time() < 5) && opModeIsActive()) collectionMotor.setPower(-0.5);
                 collectionMotor.setPower(0);
-                driveWithEncoders(DRIVE_POWER/2, 10);
-                driveWithEncoders(DRIVE_POWER, -6);
+                elapsedTime.reset();
+                while((elapsedTime.time() < 1) && opModeIsActive()) {
+                    frontLeftMotor.setPower(0.2);
+                    frontRightMotor.setPower(0.2);
+                    backLeftMotor.setPower(0.2);
+                    backRightMotor.setPower(0.2);
+                }
+                driveWithEncoders(DRIVE_POWER, -5);
+                setMotorsPowers(0, DRIVE_BASE_MOTORS);
                 isFinished = true;
             }
         }

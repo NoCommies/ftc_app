@@ -28,7 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name = "IterativeRobot")
-public abstract class IterativeRobot extends LinearOpMode {
+public abstract class AccelerometerRobot extends LinearOpMode {
 
     /* FIELD PARAMETERS *///commit_file
 

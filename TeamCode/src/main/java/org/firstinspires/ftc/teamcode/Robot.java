@@ -35,13 +35,12 @@ public abstract class Robot extends OpMode {
     private static final int ENCODER_TICKS_PER_ROTATION = 1120; //encoder counts per shaft turn
     private static final int MOTOR_TEETH = 32;
     private static final int WHEEL_TEETH = 16;
-    private static final double GEAR_RATIO = WHEEL_TEETH / (double) MOTOR_TEETH; //48 teeth on motor gear, 32 teeth on wheel gear
+    private static final double GEAR_RATIO = WHEEL_TEETH / (double) MOTOR_TEETH;
     private static final double WHEEL_DIAMETER = 4;
     /* HARDWARE */
     //declares our hardware, initialized later in init()
     private static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; //wheel diameter * pi
-    private static final double COUNTS_PER_INCH =
-            (ENCODER_TICKS_PER_ROTATION * GEAR_RATIO) / WHEEL_CIRCUMFERENCE;
+    private static final double COUNTS_PER_INCH = (ENCODER_TICKS_PER_ROTATION * GEAR_RATIO) / WHEEL_CIRCUMFERENCE;
     private static final double GYRO_TURN_TOLERANCE_DEGREES = 5;
     private static final int ENCODER_TOLERANCE = 10;
     protected static Telemetry staticTelemetry;
@@ -91,9 +90,6 @@ public abstract class Robot extends OpMode {
     private DcMotor deliveryMotor;
     private Servo barServo;
     private CRServo elbowServo;
-    protected int stateIndex = 0;
-    protected int currentPathSegmentIndex = 0;
-    protected boolean stateStarted = false;
 
     {
 
@@ -103,12 +99,6 @@ public abstract class Robot extends OpMode {
     {
         msStuckDetectInit = 10000;
         msStuckDetectLoop = 15000;
-    }
-
-    public enum State {
-
-        STATE_INITIAL,
-        STATE_STOP,
     }
 
     static void reverse(DcMotor d) {
@@ -224,6 +214,22 @@ public abstract class Robot extends OpMode {
         setMotorsModes(DcMotor.RunMode.RUN_USING_ENCODER, DRIVE_BASE_MOTORS);
     }
 
+    protected static void driveFullRotation(double power){
+
+        frontLeftMotor.setTargetPosition((int)(140/Math.PI));
+        frontRightMotor.setTargetPosition((int)(140/Math.PI));
+        backLeftMotor.setTargetPosition((int)(140/Math.PI));
+        backRightMotor.setTargetPosition((int)(140/Math.PI));
+        setMotorsModes(DcMotor.RunMode.RUN_TO_POSITION, DRIVE_BASE_MOTORS);
+        while (Math.abs(DRIVE_BASE_MOTORS[0].getCurrentPosition() - DRIVE_BASE_MOTORS[0].getTargetPosition()) > ENCODER_TOLERANCE) {
+
+            setMotorsPowers(power, DRIVE_BASE_MOTORS);
+        }
+        setMotorsPowers(0, DRIVE_BASE_MOTORS);
+        setMotorsModes(DcMotor.RunMode.RUN_USING_ENCODER, DRIVE_BASE_MOTORS);
+
+    }
+
     static double formatAngle(double angle) {
 
         angle %= 360;
@@ -241,28 +247,6 @@ public abstract class Robot extends OpMode {
         staticTelemetry.addData(status.toString(), "");
         staticTelemetry.update();
     }
-
-    protected void switchToNextState(int states) {
-
-        elapsedTimeForCurrentState.reset();
-        stateIndex += states;
-        stateStarted = false;
-
-        if (stateIndex >= stateList().length) {
-
-            stateIndex = stateList().length - 1;
-        }
-
-        if (stateIndex < 0) {
-
-            stateIndex = 0;
-        }
-
-        currentState = stateList()[stateIndex];
-        DbgLog.msg("State changed to " + currentState);
-    }
-
-
 
     double calculateInches() {
 
@@ -376,27 +360,6 @@ public abstract class Robot extends OpMode {
 
     @Override
     public void loop() {
-
-        switch (currentState) {
-
-            case STATE_INITIAL:
-
-                if (!turningGyro.isCalibrating()) {
-
-                    steadyHeading = heading;
-                    runWithoutEncoders();
-                    switchToNextState();
-                }
-
-                break;
-
-            case STATE_STOP:
-
-                startPath(stop);
-                TurnOffAllDriveMotors();
-
-                break;
-        }
 
     }
 

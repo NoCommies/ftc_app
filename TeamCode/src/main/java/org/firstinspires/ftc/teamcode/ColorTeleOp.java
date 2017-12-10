@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name = "ColorTeleOp", group = "Iterative Opmode")
+@TeleOp(name = "RRHolonomic", group = "Iterative Opmode")
 
 public class ColorTeleOp extends OpMode {
     // Declare OpMode members.
@@ -55,6 +55,7 @@ public class ColorTeleOp extends OpMode {
     private CRServo clawServo = null;
     private Servo armY = null;
     private Servo armX = null;
+    private Servo alignmentDevice = null;
     /*
 
      * Code to run ONCE when the driver hits INIT
@@ -79,6 +80,7 @@ public class ColorTeleOp extends OpMode {
         clawServo = hardwareMap.get(CRServo.class, "clawServo");
         armY = hardwareMap.get(Servo.class, "armY");
         armX = hardwareMap.get(Servo.class, "armX");
+        alignmentDevice= hardwareMap.get(Servo.class, "alignmentDevice");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -91,14 +93,17 @@ public class ColorTeleOp extends OpMode {
         deliveryMotor.setDirection(DcMotor.Direction.FORWARD);
         //Set the 180 servos to their middle position
         barServo.setPosition(STARTPOSITION180);
-        armX.setPosition(0.5);
-        armY.setPosition(1);
+        //armX.setPosition(0.4);
+        //armY.setPosition(0.65);
+        alignmentDevice.setPosition(1);
         //Set the continous servos to a neutral power, to make sure they do not move while
         // initiallizing
         clawServo.setPower(0);
         elbowServo.setPower(0);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+
     }
 
     /*
@@ -116,6 +121,10 @@ public class ColorTeleOp extends OpMode {
         runtime.reset();
     }
 
+    double x = 0.35;
+    double y = 0.65;
+    double alignment = 1;
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -127,7 +136,7 @@ public class ColorTeleOp extends OpMode {
         final double BARMOVE = -1.0;
         final double BARDOWN = 1.0;
         double position = 0.0;
-        double clawPosition = 0.0;
+        double servoStep = 0.02;
 
         //we set what to do when the motor is not given power, which is to brake completely,
         //instead of coasting
@@ -161,7 +170,7 @@ public class ColorTeleOp extends OpMode {
         // finer adjustments
         double elbow = gamepad1.right_stick_y;
         //elbow is a variable set to the amount of power the driver wants to give to move this servo
-        double clawPower = gamepad2.right_stick_y;
+        double clawPower = -gamepad2.right_stick_y;
         //clawPower is a variable set to the amount of power the driver wants to give to move
         // this servo
 
@@ -185,29 +194,18 @@ public class ColorTeleOp extends OpMode {
         }
 
         if (gamepad2.y) {
-            //if the driver hits the left bumper, that signals that the driver wants to make
-            // the kicker go up, and kick the block up
-            armY.setPosition(0.55);
-            position = 0.55;
-        } else {
-            //If the driver does not press this button, we let the kicker fall down
-            armY.setPosition(1);
-            position = 1;
+            y += servoStep;
+        }
+        if(gamepad2.x) {
+           y -= servoStep;
         }
 
 
         if (gamepad2.dpad_left) {
-            //if the driver hits the left bumper, that signals that the driver wants to make
-            // the kicker go up, and kick the block up
-            armX.setPosition(0.325);
-            clawPosition = 0.325;
-        } else if (gamepad2.dpad_right){
-            //If the driver does not press this button, we let the kicker fall down
-            armX.setPosition(0.125);
-            clawPosition = 0.125;
-        } else {
-            armX.setPosition(0.25);
-            clawPosition = 0.25;
+             x += servoStep;
+        }
+        if (gamepad2.dpad_right){
+            x -= servoStep;
         }
 
         if (deliveryUp) {
@@ -219,6 +217,15 @@ public class ColorTeleOp extends OpMode {
             //we set deliveryPower to 1
             deliveryPower = 1;
         }
+
+        if (gamepad1.dpad_down) {
+            alignment = 0.5;
+        } else if(gamepad1.dpad_left){
+            alignment = alignment + servoStep;
+        } else if(gamepad1.dpad_right) {
+            alignment = alignment - servoStep;
+        }
+
 
         //we calculate the power to send to each different wheel, which each need their own power
         //since it is calculated in different ways, because of the turning and holonomic abilities
@@ -253,12 +260,16 @@ public class ColorTeleOp extends OpMode {
         deliveryMotor.setPower(deliveryPower);
         elbowServo.setPower(elbow);
         clawServo.setPower(clawPower);
+        alignmentDevice.setPosition(alignment);
+        armX.setPosition(x);
+        armY.setPosition(y);
 
 
         // Show the elapsed game time
        telemetry.addData("Status", "Run Time: " + runtime.toString());
-       telemetry.addData("Position in Y-Axis", position);
-        telemetry.addData("Position in X-Axis", clawPosition);
+       telemetry.addData("Position in Y-Axis", y);
+        telemetry.addData("Position in X-Axis", x);
+        telemetry.addData("Alignment Device Position", alignment);
        //we make the turn values 0, so that the robot will stop turning
         turnLeft = 0;
         turnRight = 0;
